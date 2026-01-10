@@ -1,0 +1,433 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>36-Hour Worldwide Watch</title>
+    <style>
+        /* Base Styles */
+        body {
+            font-family: sans-serif;
+            background-color: #0a0a0c;
+            color: white;
+            margin: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            padding: 1rem;
+        }
+
+        .main-wrapper {
+            text-align: center;
+            width: 100%;
+            max-width: 48rem;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        h1 {
+            font-size: 1.25rem;
+            font-weight: 700;
+            color: #6b7280;
+            margin-bottom: 1.5rem;
+            letter-spacing: 0.3em;
+            text-transform: uppercase;
+        }
+
+        /* Clock Container */
+        .clock-container {
+            position: relative;
+            width: 320px;
+            height: 320px;
+            margin-bottom: 2rem;
+        }
+
+        /* Fixed Gradient Overlay for the Map Area */
+        /* Positioned at the bottom half, peaking at the 5 mark (bottom center) */
+        .fixed-map-gradient {
+            position: absolute;
+            top: 15%;
+            left: 15%;
+            width: 70%;
+            height: 70%;
+            border-radius: 50%;
+            pointer-events: none;
+            z-index: 5; /* Below the SVG markers and hands */
+            background: radial-gradient(circle at 50% 100%, rgba(0,0,0,0.85) 0%, rgba(0,0,0,0.4) 20%, rgba(0,0,0,0) 75%);
+        }
+
+        .glass-card {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
+            border-radius: 2rem;
+            padding: 1.5rem;
+            text-align: center;
+            width: 100%;
+            transition: transform 0.3s ease;
+            box-sizing: border-box;
+        }
+
+        #day-name {
+            font-size: 1rem;
+            font-weight: 300;
+            letter-spacing: 0.2em;
+            text-transform: uppercase;
+            margin-bottom: 0.5rem;
+            opacity: 0.9;
+        }
+
+        #full-date {
+            font-size: 1.4rem;
+            font-weight: 700;
+            letter-spacing: -0.025em;
+            margin: 0;
+        }
+
+        .divider {
+            width: 2rem;
+            height: 2px;
+            background: rgba(255, 255, 255, 0.2);
+            margin: 0.75rem auto;
+            border-radius: 9999px;
+        }
+
+        #greeting {
+            font-size: 0.8rem;
+            font-weight: 500;
+            font-style: italic;
+            opacity: 0.8;
+            margin: 0;
+        }
+
+        @media (min-width: 768px) {
+            .clock-container {
+                width: 480px;
+                height: 480px;
+            }
+            h1 { font-size: 1.5rem; }
+            #full-date { font-size: 2.2rem; }
+            #day-name { font-size: 1.2rem; }
+            .glass-card { padding: 2.5rem; }
+        }
+
+        /* Rotational elements */
+        #hour-ring, #minute-hand, #second-hand, #world-map-container {
+            transition: transform 0.1s linear;
+            transform-origin: center;
+        }
+
+        /* Map Styles */
+        .map-image {
+            width: 70%;
+            height: 70%;
+            position: absolute;
+            top: 15%;
+            left: 15%;
+            border-radius: 50%;
+            opacity: 0.8;
+            filter: brightness(0.8) contrast(1.2);
+            pointer-events: none;
+            transform-origin: center;
+        }
+
+        .map-graticule {
+            fill: none;
+            stroke: rgba(34, 211, 238, 0.1);
+            stroke-width: 0.1;
+        }
+
+        /* Glow Effects */
+        .glow-cyan { filter: drop-shadow(0 0 5px rgba(34, 211, 238, 0.7)); }
+        .glow-purple { filter: drop-shadow(0 0 5px rgba(168, 85, 247, 0.7)); }
+        .glow-yellow { filter: drop-shadow(0 0 8px rgba(250, 204, 21, 0.8)); }
+
+        /* Marker Styles */
+        .marker-text {
+            font-size: 4px;
+            font-weight: bold;
+            fill: #4b5563;
+        }
+        .current-marker {
+            fill: #22d3ee;
+            font-size: 5.5px;
+        }
+
+        /* Digital Display Card */
+        .digital-card {
+            width: 100%;
+            background-color: rgba(17, 24, 39, 0.4);
+            backdrop-filter: blur(4px);
+            padding: 1.5rem;
+            border-radius: 1rem;
+            border: 1px solid rgba(31, 41, 55, 0.8);
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+            box-sizing: border-box;
+        }
+
+        .deg-display {
+            font-size: 3rem;
+            font-weight: 700;
+            font-variant-numeric: tabular-nums;
+            letter-spacing: -0.025em;
+        }
+
+        @media (min-width: 768px) {
+            .deg-display { font-size: 3.75rem; }
+        }
+
+        .deg-unit {
+            color: #22d3ee;
+            font-size: 1.5rem;
+            margin-left: 0.25rem;
+        }
+
+        .sec-display {
+            font-size: 1.25rem;
+            color: #c999f7;
+            font-variant-numeric: tabular-nums;
+            font-weight: 500;
+            margin-top: 0.25rem;
+        }
+
+        /* Info Footer */
+        .info-footer {
+            margin-top: 1rem;
+            padding-top: 1rem;
+            border-top: 1px solid #1f2937;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .timezone-label {
+            font-size: 13px;
+            color: #eab308;
+            font-weight: 700;
+            letter-spacing: 0.2em;
+            padding-bottom: 1.2rem;
+        }
+
+        .legend {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 0.5rem;
+            font-size: 12px;
+            letter-spacing: 0.1em;
+            color: #bababa;
+            /* text-transform: uppercase; */
+            width: 100%;
+        }
+
+        .legend-item {
+            display: flex;
+            align-items: center;
+            gap: 0.375rem;
+        }
+
+        .legend-bar {
+            width: 0.5rem;
+            height: 2px;
+        }
+
+        .bg-cyan { background-color: #22d3ee; }
+        .bg-purple { background-color: #a855f7; }
+
+        /* Enhanced Visibility for Markers */
+        .minute-marker-line {
+            stroke: #080808;
+            stroke-width: 0.6;
+            filter: drop-shadow(0 0 1px #000);
+        }
+        .minute-marker-text {
+            fill: #e5e7eb;
+            font-weight: 800;
+            font-size: 3px;
+            paint-order: stroke;
+            stroke: #000;
+            stroke-width: 0.5px;
+            stroke-linecap: round;
+            stroke-linejoin: round;
+        }
+/* Brand Footer Slogan */
+        .brand-footer {
+            margin-top: 3rem;
+            border-top: 1px solid rgba(255,255,255,0.05);
+            padding-top: 1.5rem;
+            opacity: 0.6;
+        }
+        .footer-slogan {
+            font-size: 0.9rem;
+            letter-spacing: 0.05em;
+            margin-bottom: 0.25rem;
+            font-style: italic;
+        }
+        .footer-subtitle {
+            font-size: 0.7rem;
+            text-transform: uppercase;
+            letter-spacing: 0.2em;
+            color: #4b5563;
+        }
+#clock {
+            font-size: 28px;
+            font-weight: bold;
+            color: #333;
+            background: white;
+            padding: 5px;
+            border-radius: 40px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+        }
+        /* Grid Layout */
+        .grid {
+            display: grid;
+            gap: 1.5rem;
+            width: 100%;
+            max-width: 900px;
+        }
+        .grid-cols-2 {
+            grid-template-columns: 1fr; /* Stack on mobile */
+        }
+        @media (min-width: 768px) {
+            .grid-cols-2 {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+        /* longitude */
+/* Making the manual input look like regular text */
+        #current-lon { 
+            border-bottom: 1px dashed #007BFF; 
+            cursor: pointer; 
+            padding: 3px 8px;
+            color: #bcdafa;
+            outline: none;
+        }
+        /* Mobile-first: default state (usually block or hidden) */
+.my-element {
+  display: block;
+  /* row-gap: 50px; */
+}
+
+/* Medium screens (768px) and larger */
+@media (min-width: 768px) {
+  .my-element {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 8rem;
+  }
+}
+
+    </style>
+</head>
+<body>
+
+    <div class="main-wrapper">
+        <h1>36-Hour Worldwide Watch System</h1>
+        
+        <div class="clock-container">
+            <!-- Fixed transparent dark gradient overlay -->
+            <div class="fixed-map-gradient"></div>
+
+            <img id="world-map-image" 
+                 class="map-image" 
+                 src="Azimuthal_equidistant_projection_SW.jpg" 
+                 alt="North Pole Map">
+
+            <!-- SVG is Z-indexed higher than the gradient to keep markers/hands readable -->
+            <svg viewBox="0 0 100 100" style="width: 100%; height: 100%; position: absolute; top: 0; left: 0; z-index: 10;">
+                <circle cx="50" cy="50" r="48" fill="none" stroke="#111827" stroke-width="0.5"></circle>
+                
+                <g id="world-map-container">
+                    <circle cx="50" cy="50" r="7" class="map-graticule" />
+                    <circle cx="50" cy="50" r="14" class="map-graticule" />
+                    <circle cx="50" cy="50" r="21" class="map-graticule" />
+                    <circle cx="50" cy="50" r="28" class="map-graticule" />
+                    <circle cx="50" cy="50" r="35" class="map-graticule" />
+                    
+                    <line x1="15" y1="50" x2="85" y2="50" class="map-graticule" />
+                    <line x1="50" y1="15" x2="50" y2="85" class="map-graticule" />
+                    <line x1="25.3" y1="25.3" x2="74.7" y2="74.7" class="map-graticule" />
+                    <line x1="25.3" y1="74.7" x2="74.7" y2="25.3" class="map-graticule" />
+                    
+                    <!-- Rome Position Marker -->
+                    <circle cx="53.5" cy="61.5" r="0.8" fill="#facc15" class="glow-yellow" />
+                </g>
+
+                <g id="hour-ring">
+                    <circle cx="50" cy="50" r="41" fill="none" stroke="#111827" stroke-width="6"></circle>
+                    <g id="hour-markers"></g>
+                </g>
+
+                <g id="minute-scale-markers"></g>
+
+                <g id="minute-hand">
+                    <line x1="50" y1="50" x2="50" y2="22" stroke="#080808" stroke-width="1.5" stroke-linecap="round" class="glow-cyan" />
+                </g>
+
+                <g id="second-hand">
+                    <line x1="50" y1="50" x2="50" y2="12" stroke="#750180" stroke-width="0.6" stroke-linecap="round" class="glow-purple" />
+                </g>
+
+                <g transform="translate(50, 4)" class="glow-yellow">
+                    <circle cx="0" cy="0" r="2.5" fill="#facc15" />
+                    <g stroke="#facc15" stroke-width="0.5">
+                        <line x1="0" y1="-3.5" x2="0" y2="-5" />
+                        <line x1="-3.5" y1="0" x2="-5" y2="0" />
+                        <line x1="3.5" y1="0" x2="5" y2="0" />
+                        <line x1="-2.5" y1="-2.5" x2="-3.5" y2="-3.5" />
+                        <line x1="2.5" y1="-2.5" x2="3.5" y2="-3.5" />
+                    </g>
+                </g>
+            </svg>
+        </div>
+        <!-- ip longitude -->
+        <div class="my-element ">
+
+    <p>Your Local 12:00 = <span id="current-lon" contenteditable="true" oninput="manualUpdate()">Loading...</span></p>
+
+    <p>Your Local 00:00 / 24:00 = <span id="opposite-lon">Loading...</span></p>
+        </div>
+         
+<!-- Two time cards -->
+        <div class="grid grid-cols-2">
+            <div class="digital-card">
+                <div class="deg-display">
+                    <span id="display-deg">0</span><span class="deg-unit">°</span>
+                </div>
+                <div class="sec-display">
+                    <span id="display-sec">0</span>s
+                </div>
+                <div class="info-footer">
+                    <div class="timezone-label">TIMEZONE: UTC +1</div>
+                    <div class="legend">
+                        <div class="legend-item"><span class="legend-bar bg-cyan"></span> Min (10° /Hr)</div>
+                        <div class="legend-item"><span class="legend-bar bg-purple"></span> Sec (60s /Lap)</div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="glass-card">
+                <div id="clock">Loading...</div>
+                <h2 id="day-name">Loading...</h2>
+                <h1 id="full-date">-- --- ----</h1>
+                <div class="divider"></div>
+                <p id="greeting">Have a wonderful day!</p>
+            </div>
+        </div>
+
+        <!-- Footer with your slogans -->
+        <div class="brand-footer">
+            <div class="footer-slogan">No more timezone confusion. Four-digit to Three-digit time.</div>
+            <div class="footer-subtitle">One World. Global Time.</div>
+        </div>
+    </div>
+
+    <script src="AlKhwrizm.js">
+        
+    </script>
+</body>
+</html>
