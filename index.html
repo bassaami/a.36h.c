@@ -1,10 +1,16 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>36-Hour Worldwide Watch</title>
     <style>
+        :root {
+            --neon-color: #03e9f4;
+            --bg-color: #050801;
+        }
+
         /* Base Styles */
         body {
             font-family: sans-serif;
@@ -54,8 +60,9 @@
             height: 70%;
             border-radius: 50%;
             pointer-events: none;
-            z-index: 5; /* Below the SVG markers and hands */
-            background: radial-gradient(circle at 50% 100%, rgba(0,0,0,0.85) 0%, rgba(0,0,0,0.4) 20%, rgba(0,0,0,0) 75%);
+            z-index: 5;
+            /* Below the SVG markers and hands */
+            background: radial-gradient(circle at 50% 100%, rgba(0, 0, 0, 0.85) 0%, rgba(0, 0, 0, 0.4) 20%, rgba(0, 0, 0, 0) 75%);
         }
 
         .glass-card {
@@ -109,14 +116,29 @@
                 width: 480px;
                 height: 480px;
             }
-            h1 { font-size: 1.5rem; }
-            #full-date { font-size: 2.2rem; }
-            #day-name { font-size: 1.2rem; }
-            .glass-card { padding: 2.5rem; }
+
+            h1 {
+                font-size: 1.5rem;
+            }
+
+            #full-date {
+                font-size: 2.2rem;
+            }
+
+            #day-name {
+                font-size: 1.2rem;
+            }
+
+            .glass-card {
+                padding: 2.5rem;
+            }
         }
 
         /* Rotational elements */
-        #hour-ring, #minute-hand, #second-hand, #world-map-container {
+        #hour-ring,
+        #minute-hand,
+        #second-hand,
+        #world-map-container {
             transition: transform 0.1s linear;
             transform-origin: center;
         }
@@ -142,9 +164,23 @@
         }
 
         /* Glow Effects */
-        .glow-cyan { filter: drop-shadow(0 0 5px rgba(34, 211, 238, 0.7)); }
-        .glow-purple { filter: drop-shadow(0 0 5px rgba(168, 85, 247, 0.7)); }
-        .glow-yellow { filter: drop-shadow(0 0 8px rgba(250, 204, 21, 0.8)); }
+        .glow-cyan {
+            filter: drop-shadow(0 0 5px rgba(34, 211, 238, 0.7));
+        }
+
+        .glow-purple {
+            filter: drop-shadow(0 0 5px rgba(168, 85, 247, 0.7));
+        }
+
+        .glow-yellow {
+            filter: drop-shadow(0 0 8px rgba(250, 204, 21, 0.8));
+        }
+
+        /* Bar Styles */
+        .marker-bar {
+            stroke-width: 1.5;
+            stroke-linecap: butt;
+        }
 
         /* Marker Styles */
         .marker-text {
@@ -152,6 +188,7 @@
             font-weight: bold;
             fill: #4b5563;
         }
+
         .current-marker {
             fill: #22d3ee;
             font-size: 5.5px;
@@ -177,7 +214,9 @@
         }
 
         @media (min-width: 768px) {
-            .deg-display { font-size: 3.75rem; }
+            .deg-display {
+                font-size: 3.75rem;
+            }
         }
 
         .deg-unit {
@@ -188,7 +227,7 @@
 
         .sec-display {
             font-size: 1.25rem;
-            color: #c999f7;
+            color: #a855f7;
             font-variant-numeric: tabular-nums;
             font-weight: 500;
             margin-top: 0.25rem;
@@ -210,7 +249,6 @@
             color: #eab308;
             font-weight: 700;
             letter-spacing: 0.2em;
-            padding-bottom: 1.2rem;
         }
 
         .legend {
@@ -220,7 +258,7 @@
             font-size: 12px;
             letter-spacing: 0.1em;
             color: #bababa;
-            /* text-transform: uppercase; */
+            text-transform: uppercase;
             width: 100%;
         }
 
@@ -235,8 +273,13 @@
             height: 2px;
         }
 
-        .bg-cyan { background-color: #22d3ee; }
-        .bg-purple { background-color: #a855f7; }
+        .bg-cyan {
+            background-color: #22d3ee;
+        }
+
+        .bg-purple {
+            background-color: #a855f7;
+        }
 
         /* Enhanced Visibility for Markers */
         .minute-marker-line {
@@ -244,6 +287,7 @@
             stroke-width: 0.6;
             filter: drop-shadow(0 0 1px #000);
         }
+
         .minute-marker-text {
             fill: #e5e7eb;
             font-weight: 800;
@@ -254,106 +298,279 @@
             stroke-linecap: round;
             stroke-linejoin: round;
         }
-/* Brand Footer Slogan */
+
+        /* Brand Footer Slogan */
         .brand-footer {
             margin-top: 3rem;
-            border-top: 1px solid rgba(255,255,255,0.05);
+            border-top: 1px solid rgba(255, 255, 255, 0.05);
             padding-top: 1.5rem;
             opacity: 0.6;
         }
+
         .footer-slogan {
             font-size: 0.9rem;
             letter-spacing: 0.05em;
             margin-bottom: 0.25rem;
             font-style: italic;
         }
+
         .footer-subtitle {
             font-size: 0.7rem;
             text-transform: uppercase;
             letter-spacing: 0.2em;
             color: #4b5563;
         }
-#clock {
+
+        #clock {
             font-size: 28px;
             font-weight: bold;
             color: #333;
             background: white;
             padding: 5px;
             border-radius: 40px;
-            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
         }
+
         /* Grid Layout */
         .grid {
-        margin-top: 1rem;
             display: grid;
             gap: 1.5rem;
             width: 100%;
             max-width: 900px;
         }
+
         .grid-cols-2 {
-            grid-template-columns: 1fr; /* Stack on mobile */
+            grid-template-columns: 1fr;
+            /* Stack on mobile */
         }
+
         @media (min-width: 768px) {
             .grid-cols-2 {
                 grid-template-columns: repeat(2, 1fr);
             }
         }
+
         /* longitude */
-/* Making the manual input look like regular text */
-        #current-lon { 
-            border-bottom: 1px dashed #007BFF; 
-            cursor: pointer; 
+        /* Making the manual input look like regular text */
+        #current-lon {
+            border-bottom: 1px dashed #007BFF;
+            cursor: pointer;
             padding: 3px 8px;
             color: #bcdafa;
             outline: none;
         }
+
         /* Mobile-first: default state (usually block or hidden) */
-.my-element {
-  display: block;
-  /* row-gap: 50px; */
-}
+        .my-element {
+            display: block;
+            /* row-gap: 50px; */
+        }
 
-/* Medium screens (768px) and larger */
-@media (min-width: 768px) {
-  .my-element {
-    display: grid;
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-    gap: 8rem;
-  }
-}
+        /* Medium screens (768px) and larger */
+        @media (min-width: 768px) {
+            .my-element {
+                display: grid;
+                grid-template-columns: repeat(2, minmax(0, 1fr));
+                gap: 8rem;
+            }
+        }
 
+        /* Container for the scroll indicator text */
+        .content-hint {
+            color: #333;
+            text-align: center;
+            padding-top: 50px;
+            font-size: 1.2rem;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+        }
+
+        /* Floating Button Logic */
+        .neon-btn {
+            /* Position fixed keeps it on screen during scroll */
+            position: fixed;
+            bottom: 40px;
+            right: 40px;
+            z-index: 1000;
+
+            display: inline-block;
+            padding: 25px 30px;
+            color: var(--neon-color);
+            font-weight: bold;
+            text-decoration: none;
+            text-transform: uppercase;
+            transition: 0.5s;
+            letter-spacing: 4px;
+            overflow: hidden;
+            background: rgba(5, 8, 1, 0.8);
+            border-radius: 4px;
+
+            /* Floating Animation */
+            animation: float 3s ease-in-out infinite;
+        }
+
+        @keyframes float {
+            0% {
+                transform: translateY(0px);
+            }
+
+            50% {
+                transform: translateY(-15px);
+            }
+
+            100% {
+                transform: translateY(0px);
+            }
+        }
+
+        .neon-btn:hover {
+            background: var(--neon-color);
+            color: var(--bg-color);
+            box-shadow: 0 0 5px var(--neon-color), 0 0 25px var(--neon-color), 0 0 50px var(--neon-color), 0 0 100px var(--neon-color);
+            -webkit-box-reflect: below 1px linear-gradient(transparent, #0005);
+            animation-play-state: paused;
+            /* Stop floating on hover for better interaction */
+        }
+
+        /* Animated border spans */
+        .neon-btn span {
+            position: absolute;
+            display: block;
+        }
+
+        .line-top {
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 2px;
+            background: linear-gradient(90deg, transparent, var(--neon-color));
+            animation: anim1 1s linear infinite;
+        }
+
+        @keyframes anim1 {
+
+            50%,
+            100% {
+                left: 100%;
+            }
+        }
+
+        .line-right {
+            top: -100%;
+            right: 0;
+            width: 2px;
+            height: 100%;
+            background: linear-gradient(180deg, transparent, var(--neon-color));
+            animation: anim2 1s linear infinite;
+            animation-delay: 0.25s;
+        }
+
+        @keyframes anim2 {
+
+            50%,
+            100% {
+                top: 100%;
+            }
+        }
+
+        .line-bottom {
+            bottom: 0;
+            right: -100%;
+            width: 100%;
+            height: 2px;
+            background: linear-gradient(270deg, transparent, var(--neon-color));
+            animation: anim3 1s linear infinite;
+            animation-delay: 0.5s;
+        }
+
+        @keyframes anim3 {
+
+            50%,
+            100% {
+                right: 100%;
+            }
+        }
+
+        .line-left {
+            bottom: -100%;
+            left: 0;
+            width: 2px;
+            height: 100%;
+            background: linear-gradient(360deg, transparent, var(--neon-color));
+            animation: anim4 1s linear infinite;
+            animation-delay: 0.75s;
+        }
+
+        @keyframes anim4 {
+
+            50%,
+            100% {
+                bottom: 100%;
+            }
+        }
+
+        /* Mobile Adjustments */
+        @media (max-width: 640px) {
+            .neon-btn {
+                bottom: 20px;
+                right: 20px;
+                padding: 15px 20px;
+                font-size: 0.8rem;
+                font-weight: bold;
+                letter-spacing: 2px;
+            }
+        }
     </style>
 </head>
+
 <body>
 
     <div class="main-wrapper">
         <h1>36-Hour Worldwide Watch System</h1>
-        
+
         <div class="clock-container">
             <!-- Fixed transparent dark gradient overlay -->
             <div class="fixed-map-gradient"></div>
 
-            <img id="world-map-image" 
-                 class="map-image" 
-                 src="Azimuthal_equidistant_projection_SW.jpg" 
-                 alt="North Pole Map">
+            <img id="world-map-image" class="map-image"
+                src="https://upload.wikimedia.org/wikipedia/commons/thumb/e/ec/Azimuthal_equidistant_projection_SW.jpg/1024px-Azimuthal_equidistant_projection_SW.jpg"
+                alt="North Pole Map">
 
             <!-- SVG is Z-indexed higher than the gradient to keep markers/hands readable -->
-            <svg viewBox="0 0 100 100" style="width: 100%; height: 100%; position: absolute; top: 0; left: 0; z-index: 10;">
+            <svg viewBox="0 0 100 100"
+                style="width: 100%; height: 100%; position: absolute; top: 0; left: 0; z-index: 10;">
                 <circle cx="50" cy="50" r="48" fill="none" stroke="#111827" stroke-width="0.5"></circle>
-                
+
                 <g id="world-map-container">
                     <circle cx="50" cy="50" r="7" class="map-graticule" />
                     <circle cx="50" cy="50" r="14" class="map-graticule" />
                     <circle cx="50" cy="50" r="21" class="map-graticule" />
                     <circle cx="50" cy="50" r="28" class="map-graticule" />
                     <circle cx="50" cy="50" r="35" class="map-graticule" />
-                    
+
                     <line x1="15" y1="50" x2="85" y2="50" class="map-graticule" />
                     <line x1="50" y1="15" x2="50" y2="85" class="map-graticule" />
                     <line x1="25.3" y1="25.3" x2="74.7" y2="74.7" class="map-graticule" />
                     <line x1="25.3" y1="74.7" x2="74.7" y2="25.3" class="map-graticule" />
-                    
+
+                    <!-- New Moving Bars Group -->
+                    <g id="moving-bars">
+                        <!-- Bars will be rotated by JS. Initial position pointing Up (0deg in calculation logic) -->
+                        <!-- Bar length approx 0.8rem (scaled to SVG coords, roughly 4 units). Positioned at corner of circle (radius 34-38) -->
+
+                        <!-- Yellow Bar (Local 12:00) -->
+                        <line id="bar-yellow" x1="50" y1="12" x2="50" y2="16" stroke="#facc15" class="marker-bar" />
+
+                        <!-- Dark Blue Bar (Local 00:00/24:00 - Opposite) -->
+                        <line id="bar-blue" x1="50" y1="12" x2="50" y2="16" stroke="#1e3a8a" class="marker-bar" />
+
+                        <!-- Orange Bar 1 (+90) -->
+                        <line id="bar-orange-1" x1="50" y1="12" x2="50" y2="16" stroke="#f97316" class="marker-bar" />
+
+                        <!-- Orange Bar 2 (-90) -->
+                        <line id="bar-orange-2" x1="50" y1="12" x2="50" y2="16" stroke="#f97316" class="marker-bar" />
+                    </g>
+
                     <!-- Rome Position Marker -->
                     <circle cx="53.5" cy="61.5" r="0.8" fill="#facc15" class="glow-yellow" />
                 </g>
@@ -366,11 +583,13 @@
                 <g id="minute-scale-markers"></g>
 
                 <g id="minute-hand">
-                    <line x1="50" y1="50" x2="50" y2="22" stroke="#080808" stroke-width="1.5" stroke-linecap="round" class="glow-cyan" />
+                    <line x1="50" y1="50" x2="50" y2="22" stroke="#080808" stroke-width="1.5" stroke-linecap="round"
+                        class="glow-cyan" />
                 </g>
 
                 <g id="second-hand">
-                    <line x1="50" y1="50" x2="50" y2="12" stroke="#750180" stroke-width="0.6" stroke-linecap="round" class="glow-purple" />
+                    <line x1="50" y1="50" x2="50" y2="12" stroke="#750180" stroke-width="0.6" stroke-linecap="round"
+                        class="glow-purple" />
                 </g>
 
                 <g transform="translate(50, 4)" class="glow-yellow">
@@ -388,12 +607,13 @@
         <!-- ip longitude -->
         <div class="my-element ">
 
-    <p>Your Local 12:00 = <span id="current-lon" contenteditable="true" oninput="manualUpdate()">Loading...</span></p>
+            <p>Your Local 12:00 = <span id="current-lon" contenteditable="true"
+                    oninput="manualUpdate()">Loading...</span></p>
 
-    <p>Your Local 00:00 / 24:00 = <span id="opposite-lon">Loading...</span></p>
+            <p>Your Local 00:00 / 24:00 = <span id="opposite-lon">Loading...</span></p>
         </div>
-         <div class="">If it is = 28.5° , you read "28 hour 5 minute"</div>
-<!-- Two time cards -->
+
+        <!-- Two time cards -->
         <div class="grid grid-cols-2">
             <div class="digital-card">
                 <div class="deg-display">
@@ -405,12 +625,12 @@
                 <div class="info-footer">
                     <div class="timezone-label">TIMEZONE: UTC +1</div>
                     <div class="legend">
-                        <div class="legend-item"><span class="legend-bar bg-cyan"></span> Min (10° /Hr)</div>
-                        <div class="legend-item"><span class="legend-bar bg-purple"></span> Sec (60s /Lap)</div>
+                        <div class="legend-item"><span class="legend-bar bg-cyan"></span> Min (10°/Hr)</div>
+                        <div class="legend-item"><span class="legend-bar bg-purple"></span> Sec (60s/Lap)</div>
                     </div>
                 </div>
             </div>
-            
+
             <div class="glass-card">
                 <div id="clock">Loading...</div>
                 <h2 id="day-name">Loading...</h2>
@@ -419,16 +639,283 @@
                 <p id="greeting">Have a wonderful day!</p>
             </div>
         </div>
-
+        <a  class="neon-btn " id="gemini-text" >
+            <span class="line-top"></span>
+            <span class="line-right"></span>
+            <span class="line-bottom"></span>
+            <span class="line-left"></span>
+            Take AI tour or learn about it
+        </a>
         <!-- Footer with your slogans -->
         <div class="brand-footer">
             <div class="footer-slogan">No more timezone confusion. Four-digit to Three-digit time.</div>
             <div class="footer-subtitle">One World. Global Time.</div>
         </div>
     </div>
+    
+<script src='js/Driver.js'></script>
 
-    <script src="AlKhwrizm.js">
-        
+    <script>
+        const hourRing = document.getElementById('hour-ring');
+        const worldMapContainer = document.getElementById('world-map-container');
+        const worldMapImage = document.getElementById('world-map-image');
+        const hourMarkersGroup = document.getElementById('hour-markers');
+        const minuteScaleGroup = document.getElementById('minute-scale-markers');
+        const minuteHand = document.getElementById('minute-hand');
+        const secondHand = document.getElementById('second-hand');
+
+        const degEl = document.getElementById('display-deg');
+        const secEl = document.getElementById('display-sec');
+
+        const SEC_PER_DAY = 86400;
+        const DEGREES_IN_DAY = 360;
+        const CUSTOM_SECONDS_IN_DEGREE = 360;
+        const STANDARD_SECONDS_PER_DEGREE = SEC_PER_DAY / DEGREES_IN_DAY;
+
+        // Current alignment settings
+        const ROME_LONGITUDE = -15.5;
+        const MAP_RELATIVE_OFFSET = -ROME_LONGITUDE;
+
+        function initHourMarkers() {
+            for (let i = 0; i < 36; i++) {
+                const angle = (i * 10) - 90;
+                const rad = (angle * Math.PI) / 180;
+                const x = 50 + 41 * Math.cos(rad);
+                const y = 50 + 41 * Math.sin(rad);
+                const text = document.createElementNS("http://www.w3.org/2000/svg", "text");
+                text.setAttribute("x", x);
+                text.setAttribute("y", y);
+                text.setAttribute("text-anchor", "middle");
+                text.setAttribute("dominant-baseline", "middle");
+                text.setAttribute("class", "marker-text");
+                text.setAttribute("transform", `rotate(${angle + 90}, ${x}, ${y})`);
+                text.textContent = i;
+                hourMarkersGroup.appendChild(text);
+            }
+        }
+
+        function initMinuteScale() {
+            for (let i = 0; i < 10; i++) {
+                const angle = (i * 36) - 90;
+                const rad = (angle * Math.PI) / 180;
+
+                const line = document.createElementNS("http://www.w3.org/2000/svg", "line");
+                line.setAttribute("x1", 50 + 33 * Math.cos(rad));
+                line.setAttribute("y1", 50 + 33 * Math.sin(rad));
+                line.setAttribute("x2", 50 + 35 * Math.cos(rad));
+                line.setAttribute("y2", 50 + 35 * Math.sin(rad));
+                line.setAttribute("class", "minute-marker-line");
+                minuteScaleGroup.appendChild(line);
+
+                const text = document.createElementNS("http://www.w3.org/2000/svg", "text");
+                text.setAttribute("x", 50 + 30 * Math.cos(rad));
+                text.setAttribute("y", 50 + 30 * Math.sin(rad));
+                text.setAttribute("text-anchor", "middle");
+                text.setAttribute("dominant-baseline", "middle");
+                text.setAttribute("class", "minute-marker-text");
+                text.textContent = i;
+                minuteScaleGroup.appendChild(text);
+            }
+        }
+
+        function updateClock() {
+            const now = new Date();
+            const utcHours = now.getUTCHours();
+            const utcMinutes = now.getUTCMinutes();
+            const utcSeconds = now.getUTCSeconds();
+            const utcMillis = now.getUTCMilliseconds();
+
+            let hours = utcHours + 1; // Rome offset (winter)
+            if (hours >= 24) hours -= 24;
+            if (hours < 0) hours += 24;
+
+            const totalStandardSecondsToday = (hours * 3600) + (utcMinutes * 60) + utcSeconds + (utcMillis / 1000);
+            const totalDegreesToday = totalStandardSecondsToday / STANDARD_SECONDS_PER_DEGREE;
+
+            const currentDegrees = Math.floor(totalDegreesToday);
+            const remainderForSeconds = totalDegreesToday - currentDegrees;
+            const currentCustomSeconds = Math.floor(remainderForSeconds * CUSTOM_SECONDS_IN_DEGREE);
+
+            const ringRotation = -totalDegreesToday;
+            hourRing.style.transform = `rotate(${ringRotation}deg)`;
+
+            const combinedMapRotation = ringRotation + MAP_RELATIVE_OFFSET;
+            worldMapContainer.style.transform = `rotate(${combinedMapRotation}deg)`;
+            worldMapImage.style.transform = `rotate(${combinedMapRotation}deg)`;
+
+            const minuteRotation = (totalDegreesToday % 10) * 36;
+            minuteHand.style.transform = `rotate(${minuteRotation}deg)`;
+
+            const secondLapRotation = (currentCustomSeconds % 60) * 6;
+            secondHand.style.transform = `rotate(${secondLapRotation}deg)`;
+
+            degEl.textContent = currentDegrees;
+            secEl.textContent = currentCustomSeconds;
+
+            const hourIndex = Math.floor(currentDegrees / 10) % 36;
+            const markers = hourMarkersGroup.getElementsByTagName('text');
+            for (let i = 0; i < markers.length; i++) {
+                markers[i].classList.toggle('current-marker', i === hourIndex);
+                markers[i].classList.toggle('glow-cyan', i === hourIndex);
+            }
+        }
+
+        function updateDisplayDate() {
+            const now = new Date();
+            const dayName = now.toLocaleDateString('en-US', { weekday: 'long' });
+            const fullDate = now.toLocaleDateString('en-US', {
+                month: 'long',
+                day: 'numeric',
+                year: 'numeric'
+            });
+
+            document.getElementById('day-name').textContent = dayName;
+            document.getElementById('full-date').textContent = fullDate;
+
+            const localHours = now.getHours();
+            const greetingEl = document.getElementById('greeting');
+            if (localHours < 12) greetingEl.textContent = "Good Morning!";
+            else if (localHours < 18) greetingEl.textContent = "Good Afternoon!";
+            else greetingEl.textContent = "Good Evening!";
+        }
+
+        function updateTime() {
+            const now = new Date();
+
+            // Extract hours, minutes, and seconds
+            let hours = now.getHours();
+            let minutes = now.getMinutes();
+            let seconds = now.getSeconds();
+
+            // Add leading zeros for single digits (e.g., 05 instead of 5)
+            minutes = minutes < 10 ? '0' + minutes : minutes;
+            seconds = seconds < 10 ? '0' + seconds : seconds;
+
+            // Format as HH:MM:SS
+            const timeString = `${hours}:${minutes}:${seconds}`;
+
+            // Display the time
+            document.getElementById('clock').textContent = timeString;
+        }
+
+        // Run the function once immediately
+        updateTime();
+        // Update the time every 1000ms (1 second)
+        setInterval(updateTime, 1000);
+
+        // --- BAR UPDATE LOGIC ---
+        function updateUserBars() {
+            const input = document.getElementById('current-lon').innerText;
+            const val = parseFloat(input.replace(/[^\d.-]/g, ''));
+            if (isNaN(val)) return;
+
+            // 1. Find Rome's actual Angle on the SVG
+            // Rome is at cx=53.5, cy=61.5. Center is 50,50.
+            const dx = 53.5 - 50;
+            const dy = 61.5 - 50;
+            const romeRad = Math.atan2(dy, dx);
+            // SVG rotation standard: 0 is at 3 o'clock (positive X axis), increasing clockwise.
+            // But atan2 returns radians from positive X axis, increasing clockwise (since SVG Y is down).
+            // So this romeRad is correct for standard SVG rotation.
+            const romeDeg = romeRad * (180 / Math.PI); // approx 73 deg
+
+            // 2. User logic: Rome = 180 user-degrees.
+            // We need to map User Degree (val) to SVG Degree.
+            // If User = 180, SVG = romeDeg.
+            // If User = 0, SVG = romeDeg - 180 (Opposite).
+
+            // The difference between Rome (180) and Input (val)
+            const diff = val - 180;
+
+            // Yellow Bar (at Input value)
+            const yellowAngle = romeDeg + diff;
+
+            // Blue Bar (Opposite to Yellow)
+            const blueAngle = yellowAngle + 180;
+
+            // Orange Bars (+90 and -90 from Yellow)
+            const orange1Angle = yellowAngle + 90;
+            const orange2Angle = yellowAngle - 90;
+
+            // Apply rotations
+            // We rotate the lines around the center 50,50.
+            // Note: The lines are drawn initially at 12 o'clock position (x=50, y=12).
+            // 12 o'clock corresponds to -90 degrees in standard 0-at-3-o'clock system.
+            // So we need to add 90 to the rotation to align 0 with 12 o'clock, 
+            // OR simply adjust the calculation.
+            // Let's rely on visuals: Rome is at Bottom Right (~4:30).
+            // romeDeg is ~73 (Positive X to Positive Y).
+            // If we rotate a 12-o'clock line by 73 degrees, it ends up at ~2:30.
+            // 12 o'clock is -90 degrees.
+            // To get to 73 degrees (Rome), we need to rotate it by (73 - (-90)) = 163 degrees.
+            // So transform = rotate(angle + 90, 50, 50) is likely what we need if 0 is standard math.
+
+            setBarAngle('bar-yellow', yellowAngle + 90);
+            setBarAngle('bar-blue', blueAngle + 90);
+            setBarAngle('bar-orange-1', orange1Angle + 90);
+            setBarAngle('bar-orange-2', orange2Angle + 90);
+        }
+
+        function setBarAngle(id, angle) {
+            const el = document.getElementById(id);
+            if (el) {
+                el.setAttribute('transform', `rotate(${angle}, 50, 50)`);
+            }
+        }
+
+        // LONGITUDE
+        function calculateOpposite(val) {
+            let lon = parseInt(val);
+            if (isNaN(lon)) return "---";
+            // 360-degree logic: (Current + 180) modulo 360
+            let opp = (lon + 180) % 360;
+            return opp.toFixed(0) + "°";
+        }
+
+        async function getLongitudeData() {
+            try {
+                // Fetch IP-based location data
+                const response = await fetch('https://ipinfo.io/json');
+                const data = await response.json();
+
+                // IPInfo returns 'loc' as "latitude,longitude"
+                const [lat, lon] = data.loc.split(',').map(Number);
+
+                // Converting -180/180 format to 0-360 format
+                let adjustedLon = lon;
+                if (adjustedLon < 0) adjustedLon += 360;
+
+                document.getElementById('current-lon').innerText = (adjustedLon + 15).toFixed(0) + "°";
+                document.getElementById('opposite-lon').innerText = calculateOpposite(adjustedLon + 15);
+                updateUserBars(); // Update bars after fetch
+            } catch (error) {
+                console.error("Error fetching location:", error);
+                document.getElementById('current-lon').innerText = "13°";
+                manualUpdate(); // Default fallback
+            }
+        }
+
+        function manualUpdate() {
+            const input = document.getElementById('current-lon').innerText;
+            // Clean the string (remove degree symbol for calculation)
+            const cleanInput = input.replace(/[^\d.-]/g, '');
+            document.getElementById('opposite-lon').innerText = calculateOpposite(cleanInput);
+            updateUserBars(); // Update bars on manual input
+        }
+
+        getLongitudeData();
+
+        window.onload = () => {
+            updateDisplayDate();
+            initHourMarkers();
+            initMinuteScale();
+            updateClock();
+            setInterval(updateClock, 50);
+            setInterval(updateDisplayDate, 60000);
+            // Ensure bars are set on load if data exists
+            setTimeout(updateUserBars, 500);
+        };
     </script>
 </body>
+
 </html>
