@@ -54,7 +54,7 @@ class GeminiTourGuide {
      * Hits your own Vercel endpoint. No API keys here!
      */
     async callGeminiAPI(text) {
-        const url = "/api/generate"; // Relative path to your serverless function
+        const url = "generate"; // Relative path to your serverless function
 
         const response = await fetch(url, {
             method: 'POST',
