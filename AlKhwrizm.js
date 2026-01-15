@@ -91,7 +91,7 @@ const hourRing = document.getElementById( 'hour-ring');
             const secondLapRotation = (currentCustomSeconds % 60) * 6; 
             secondHand.style.transform = `rotate(${secondLapRotation}deg)`;
 
-            degEl.textContent = currentDegrees/10;
+            degEl.textContent = (currentDegrees /10);
             secEl.textContent = currentCustomSeconds;
 
             const hourIndex = Math.floor(currentDegrees / 10) % 36;
